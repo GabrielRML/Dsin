@@ -1,0 +1,1 @@
+BASE = 'http://localhost/Dsin';
