@@ -156,6 +156,7 @@ Vue.component("AppVue", {
           this.dataSourceTable = resp.data.data;
           return;
         }
+        this.dataSourceTable = [];
       })
     },
 
@@ -245,9 +246,13 @@ Vue.component("AppVue", {
           return;
         }
 
+        this.dados.CODHOSPEDEIRO = this.hospedeiroManipulando.CODHOSPEDEIRO;
+
         const msg = `Deseja excluir o Hospedeiro: ${this.hospedeiroManipulando.NOME} / Seq.: ${this.hospedeiroManipulando.CODHOSPEDEIRO} ?`;
         
-        if (!confirm(msg))
+        if (confirm(msg))
+          this.Operacao();
+          this.getHospedeiros();
           return;
       }
 

@@ -197,6 +197,7 @@ Vue.component("AppVue", {
             this.dataSourceStatus = resp.data;
             return;
           }
+          this.this.dataSourceStatus = [];
         });
 
         return;
@@ -222,10 +223,15 @@ Vue.component("AppVue", {
         this.dados.VELOCIDADE = this.patoManipulando.VELOCIDADE;
         this.dados.INTELIGENCIA = this.patoManipulando.INTELIGENCIA;
         this.dados.DESCRICAO  = this.patoManipulando.DESCRICAO;
-        this.dados.CODSTATUS  = this.patoManipulando.CODSTATUS;
         this.dados.POSSUI_CHIP  = this.patoManipulando.POSSUI_CHIP == 'S' ? true : false;
 
-        console.log(this.patoManipulando)
+        this.getStatus().then(resp => {
+          if (resp.code == 1) {
+            this.dataSourceStatus = resp.data;
+            return;
+          }
+          this.this.dataSourceStatus = [];
+        }).then(()=>{this.dados.CODSTATUS  = this.patoManipulando.CODSTATUS;});
 
         return;
       }
