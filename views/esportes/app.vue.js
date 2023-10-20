@@ -8,8 +8,9 @@ const AppTemplate = `
   <div class='grid col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'>
 
     <div class='headGrid'>
-      <button type="button" @click='openModal("Novo")' class="btn btn-primary"><i class="fa-solid fa-user"></i>&nbspAdicionar</button>
-      <button type="button" @click='openModal("Editar")' class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i>&nbspEditar</button>
+      <button type="button" @click='openModal("Novo")' class="btn btn-primary"><i class="fa-solid fa-user"></i>&nbsp&nbspAdicionar</button>
+      <button type="button" @click='openModal("Editar")' class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i>&nbsp&nbspEditar</button>
+      <button type="button" @click='openModal("Excluir")' class="btn btn-danger"><i class="fa-solid fa-trash fa-lg"></i>&nbsp&nbspExcluir</button>
     </div>
 
     <div class='thead'>
@@ -121,7 +122,6 @@ Vue.component("AppVue", {
       button: '',
       dataSourceTable: [],
       esporteManipulando: {},
-      showModal: false,
       modalHeader: '',
       dados: {
         CODESPORTE: null,
@@ -137,7 +137,7 @@ Vue.component("AppVue", {
   },
   methods: {
     getEsportes() {
-      axios.post(BASE + '/esporteS/getEsportes')
+      axios.post(BASE + '/esportes/getEsportes')
       .then(resp => {
         this.dataSourceTable = resp.data;
       })
@@ -192,6 +192,24 @@ Vue.component("AppVue", {
 
         return;
       }
+
+      if (this.acao == 'Excluir') {
+
+        if (!this.esporteManipulando.CODESPORTE) {
+          alert('Por Favor, Selecione um registro.')
+          return;
+        }
+
+        this.dados.CODESPORTE = this.esporteManipulando.CODESPORTE;
+
+        const msg = `Deseja excluir o Esporte: ${this.esporteManipulando.NOME} / Seq.: ${this.esporteManipulando.CODESPORTE} ?`;
+        
+        if (confirm(msg))
+          this.Operacao();
+          this.getEsportes();
+          return;
+
+      }
     },
 
     Operacao() {
@@ -200,8 +218,14 @@ Vue.component("AppVue", {
         if (resp.data.code == 1) {
           this.getEsportes();
           this.closeModal();
+          alert(resp.data.msg);
+          return;
         }
-        alert(resp.data.msg);
+        if (resp.data.code == 0) {
+          alert(resp.data.msg);
+          return;
+        }
+        alert('Erro ao realizar operação. Esporte pode estar sendo usado por um Hospedeiro.');
         return;
       })
     },

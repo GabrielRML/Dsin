@@ -286,8 +286,14 @@ Vue.component("AppVue", {
         if (resp.data.code == 1) {
           this.getPatos();
           this.closeModal();
+          alert(resp.data.msg);
+          return;
         }
-        alert(resp.data.msg);
+        if (resp.data.code == 0) {
+          alert(resp.data.msg);
+          return;
+        }
+        alert('Erro ao realizar operação.');
         return;
       })
     },

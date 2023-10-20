@@ -19,7 +19,7 @@ class Database extends PDO
     {
         $sth = $this->prepare($sql);
 
-        if (count($array) > 1) {
+        if (count($array) > 0) {
             foreach ($array as $key=> $value) {
                 $sth->bindValue(":$key", $value);
             }

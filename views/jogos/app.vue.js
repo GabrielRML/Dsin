@@ -8,8 +8,9 @@ const AppTemplate = `
   <div class='grid col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'>
 
     <div class='headGrid'>
-      <button type="button" @click='openModal("Novo")' class="btn btn-primary"><i class="fa-solid fa-user"></i>&nbspAdicionar</button>
-      <button type="button" @click='openModal("Editar")' class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i>&nbspEditar</button>
+      <button type="button" @click='openModal("Novo")' class="btn btn-primary"><i class="fa-solid fa-user"></i>&nbsp&nbspAdicionar</button>
+      <button type="button" @click='openModal("Editar")' class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i>&nbsp&nbspEditar</button>
+      <button type="button" @click='openModal("Excluir")' class="btn btn-danger"><i class="fa-solid fa-trash fa-lg"></i>&nbsp&nbspExcluir</button>
     </div>
 
     <div class='thead'>
@@ -192,6 +193,24 @@ Vue.component("AppVue", {
 
         return;
       }
+
+      if (this.acao == 'Excluir') {
+
+        if (!this.jogoManipulando.CODJOGO) {
+          alert('Por Favor, Selecione um registro.')
+          return;
+        }
+
+        this.dados.CODJOGO = this.jogoManipulando.CODJOGO;
+
+        const msg = `Deseja excluir o Jogo: ${this.jogoManipulando.NOME} / Seq.: ${this.jogoManipulando.CODJOGO} ?`;
+        
+        if (confirm(msg))
+          this.Operacao();
+          this.getJogos();
+          return;
+
+      }
     },
 
     Operacao() {
@@ -200,8 +219,14 @@ Vue.component("AppVue", {
         if (resp.data.code == 1) {
           this.getJogos();
           this.closeModal();
+          alert(resp.data.msg);
+          return;
         }
-        alert(resp.data.msg);
+        if (resp.data.code == 0) {
+          alert(resp.data.msg);
+          return;
+        }
+        alert('Erro ao realizar operação; O Jogo pode estar sendo usado por um Hospedeiro.');
         return;
       })
     },

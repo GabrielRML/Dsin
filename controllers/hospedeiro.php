@@ -30,6 +30,36 @@ class Hospedeiro extends Controller {
         $this->model->getStatus();
     }
 
+    public function getGenerosMusicais()
+    {
+        $this->model->getGenerosMusicais();
+    }
+
+    public function getEsportes()
+    {
+        $this->model->getEsportes();
+    }
+
+    public function getJogosPreferidos()
+    {
+        $this->model->getJogosPreferidos();
+    }
+
+    public function get_Hospedeiro_Gosto_Musical()
+    {
+        $this->model->get_Hospedeiro_Gosto_Musical();
+    }
+
+    public function get_Hospedeiro_Esporte()
+    {
+        $this->model->get_Hospedeiro_Esporte();
+    }
+
+    public function get_Hospedeiro_Jogo()
+    {
+        $this->model->get_Hospedeiro_Jogo();
+    }
+
     public function Operacao()
     {
         $this->model->Operacao();
