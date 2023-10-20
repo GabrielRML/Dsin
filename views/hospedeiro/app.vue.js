@@ -359,21 +359,21 @@ Vue.component("AppVue", {
         this.get_Hospedeiro_Gosto_Musical()
         .then(resp => {
           if (resp.code == 1) {
-            this.dados.GOSTO_MUSICAL = resp.data;
+            this.dados.GOSTO_MUSICAL = resp.data.filter(x => x.CODGENERO != null);
           }
         });
 
         this.get_Hospedeiro_Esporte()
         .then(resp => {
           if (resp.code == 1) {
-            this.dados.ESPORTES = resp.data;
+            this.dados.ESPORTES = resp.data.filter(x => x.CODESPORTE != null);
           }
         });
 
         this.get_Hospedeiro_Jogo()
         .then(resp => {
           if (resp.code == 1) {
-            this.dados.JOGOS_PREFERIDOS = resp.data;
+            this.dados.JOGOS_PREFERIDOS = resp.data.filter(x => x.CODJOGO != null);
           }
         });
 
