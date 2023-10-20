@@ -2,20 +2,20 @@ const AppTemplate = `
 <div id="main">
 
   <div class='grid col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center'>
-    <h2>Manutenção dos Esportes</h2>
+    <h2>Manutenção do Gênero Musical</h2>
   </div>
 
   <div class='grid col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'>
 
     <div class='headGrid'>
       <button type="button" @click='openModal("Novo")' class="btn btn-primary"><i class="fa-solid fa-plus fa-lg"></i>&nbsp&nbspAdicionar</button>
-      <button type="button" @click='openModal("Editar")' class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i>&nbsp&nbspEditar</button>
-      <button type="button" @click='openModal("Excluir")' class="btn btn-danger"><i class="fa-solid fa-trash fa-lg"></i>&nbsp&nbspExcluir</button>
+      <button type="button" @click='openModal("Editar")' class="btn btn-secondary"><i class="fa-solid fa-pen-to-square fa-lg"></i>&nbsp&nbspEditar</button>
+      <button type="button" @click='openModal("Deletar")' class="btn btn-danger"><i class="fa-solid fa-trash fa-lg"></i>&nbsp&nbspDeletar</button>
     </div>
 
     <div class='thead'>
       <div class='col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1'><span>Sequência</span></div>
-      <div class='col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3'><span>Nome</span></div>
+      <div class='col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3'><span>Gênero Musical</span></div>
       <div class='col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1'><span>Força</span></div>
       <div class='col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1'><span>Velocidade</span></div>
       <div class='col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2'><span>Inteligência</span></div>
@@ -24,12 +24,12 @@ const AppTemplate = `
     </div>
 
     <div class='tbody'>
-      <div v-if='dataSourceTable.length == 0' class='esportes' style='margin: 1% 0'>
+      <div v-if='dataSourceTable.length == 0' class='genero' style='margin: 1% 0'>
         <span>Nenhum dado para carregar.</span>
       </div>
-      <div v-else v-for='data in dataSourceTable' class='esportes' :id='(data.CODESPORTE)' @click='esporteSelecionado(data)'>
-        <div class='col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1'>{{data.CODESPORTE}}</div>
-        <div class='col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3'>{{data.NOME}}</div>
+      <div v-else v-for='data in dataSourceTable' class='genero' :id='(data.CODGENERO)' @click='generoSelecionado(data)'>
+        <div class='col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1'>{{data.CODGENERO}}</div>
+        <div class='col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3'>{{data.GENERO}}</div>
         <div class='col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1'>{{data.FORCA}}</div>
         <div class='col-1 col-sm-1 col-md-1 col-lg-1 col-xl-1'>{{data.VELOCIDADE}}</div>
         <div class='col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2'>{{data.INTELIGENCIA}}</div>
@@ -49,14 +49,14 @@ const AppTemplate = `
 
           <div class='col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6'>
             <div class="form-group">
-              <label for="nome" class="form-control-label">Nome</label>
-              <input type="text" class="form-control" id="nome" placeholder=" " v-model='dados.NOME'>
+              <label for="nome" class="form-control-label">Gênero Musical: *</label>
+              <input type="text" class="form-control" id="nome" placeholder=" " v-model='dados.GENERO'>
             </div>
           </div>
 
           <div class='col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6'>
             <div class="form-group">
-              <label for="forca" class="form-control-label">Força</label>
+              <label for="forca" class="form-control-label">Força: *</label>
               <input type="number" class="form-control" id="forca" placeholder=" " max='1' min='100' v-model='dados.FORCA'>
             </div>
           </div>
@@ -66,14 +66,14 @@ const AppTemplate = `
         <div class='row' style='margin-top: 2%;'>
           <div class='col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6'>
             <div class="form-group">
-              <label for="velociodade" class="form-control-label">Velocidade</label>
+              <label for="velociodade" class="form-control-label">Velocidade: *</label>
               <input type="number" class="form-control" id="velociodade" placeholder=" " max='1' min='100' v-model='dados.VELOCIDADE'>
             </div>
           </div>
 
           <div class='col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6'>
             <div class="form-group">
-              <label for="inteligencia" class="form-control-label">Inteligência</label>
+              <label for="inteligencia" class="form-control-label">Inteligência: *</label>
               <input type="number" class="form-control" id="inteligencia" placeholder=" " max='1' min='100' v-model='dados.INTELIGENCIA'>
             </div>
           </div>
@@ -82,7 +82,7 @@ const AppTemplate = `
         <div class='row' style='margin-top: 2%;'>
           <div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'>
             <div class="form-group">
-              <label for="descricao" class="form-control-label">Descrição</label>
+              <label for="descricao" class="form-control-label">Descrição: </label>
               <textarea class="form-control" id="descricao" rows="3" required v-model='dados.DESCRICAO'></textarea>
             </div>
           </div>
@@ -121,11 +121,12 @@ Vue.component("AppVue", {
       acao: '',
       button: '',
       dataSourceTable: [],
-      esporteManipulando: {},
+      generoManipulando: {},
+      showModal: false,
       modalHeader: '',
       dados: {
-        CODESPORTE: null,
-        NOME: null,
+        CODGENERO: null,
+        GENERO: null,
         FORCA: null,
         VELOCIDADE: null,
         INTELIGENCIA: null,
@@ -136,22 +137,22 @@ Vue.component("AppVue", {
 
   },
   methods: {
-    getEsportes() {
-      axios.post(BASE + '/esportes/getEsportes')
+    getGenero() {
+      axios.post(BASE + '/gostoMusical/getGenero')
       .then(resp => {
         this.dataSourceTable = resp.data;
       })
     },
 
-    esporteSelecionado(element) {
+    generoSelecionado(element) {
       // Verifica se tem um contato já selecionado para remover o estilo
-      if (this.esporteManipulando.CODESPORTE) {
-        document.getElementById(this.esporteManipulando.CODESPORTE).classList.remove('EsporteSelecionado');
+      if (this.generoManipulando.CODGENERO) {
+        document.getElementById(this.generoManipulando.CODGENERO).classList.remove('GeneroSelecionado');
       }
 
-      this.esporteManipulando = element;
+      this.generoManipulando = element;
 
-      document.getElementById(element.CODESPORTE).classList.add('EsporteSelecionado');
+      document.getElementById(element.CODGENERO).classList.add('GeneroSelecionado');
     },
 
     openModal(acao) {
@@ -170,7 +171,7 @@ Vue.component("AppVue", {
 
       if (this.acao == 'Editar') {
 
-        if (!this.esporteManipulando.CODESPORTE) {
+        if (!this.generoManipulando.CODGENERO) {
           alert('Por Favor, Selecione um registro.')
           return;
         }
@@ -182,50 +183,38 @@ Vue.component("AppVue", {
           {NOME: 'Fechar', action: this.closeModal, class: 'btn btn-outline-danger'}
         ];
 
-        this.dados.CODESPORTE = this.esporteManipulando.CODESPORTE;
-        this.dados.NOME = this.esporteManipulando.NOME;
-        this.dados.FORCA  = this.esporteManipulando.FORCA;
-        this.dados.VELOCIDADE = this.esporteManipulando.VELOCIDADE;
-        this.dados.INTELIGENCIA = this.esporteManipulando.INTELIGENCIA;
-        this.dados.DESCRICAO  = this.esporteManipulando.DESCRICAO;
-        this.dados.ATIVO  = this.esporteManipulando.ATIVO == 'S' ? true : false;
+        this.dados.CODGENERO = this.generoManipulando.CODGENERO;
+        this.dados.GENERO = this.generoManipulando.GENERO;
+        this.dados.FORCA  = this.generoManipulando.FORCA;
+        this.dados.VELOCIDADE = this.generoManipulando.VELOCIDADE;
+        this.dados.INTELIGENCIA = this.generoManipulando.INTELIGENCIA;
+        this.dados.DESCRICAO  = this.generoManipulando.DESCRICAO;
+        this.dados.ATIVO  = this.generoManipulando.ATIVO == 'S' ? true : false;
 
         return;
       }
 
-      if (this.acao == 'Excluir') {
+      if (this.acao == 'Deletar') {
 
-        if (!this.esporteManipulando.CODESPORTE) {
+        if (!this.generoManipulando.CODGENERO) {
           alert('Por Favor, Selecione um registro.')
           return;
         }
+        this.dados.CODGENERO = this.generoManipulando.CODGENERO;
+        this.Operacao();
 
-        this.dados.CODESPORTE = this.esporteManipulando.CODESPORTE;
-
-        const msg = `Deseja excluir o Esporte: ${this.esporteManipulando.NOME} / Seq.: ${this.esporteManipulando.CODESPORTE} ?`;
-        
-        if (confirm(msg))
-          this.Operacao();
-          this.getEsportes();
-          return;
-
+        return;
       }
     },
 
     Operacao() {
-      axios.post(BASE + '/esportes/Operacao', {'dados': this.dados, 'acao': this.acao} )
+      axios.post(BASE + '/gostoMusical/Operacao', {'dados': this.dados, 'acao': this.acao} )
       .then(resp => {
         if (resp.data.code == 1) {
-          this.getEsportes();
+          this.getGenero();
           this.closeModal();
-          alert(resp.data.msg);
-          return;
         }
-        if (resp.data.code == 0) {
-          alert(resp.data.msg);
-          return;
-        }
-        alert('Erro ao realizar operação. Esporte pode estar sendo usado por um Hospedeiro.');
+        alert(resp.data.msg);
         return;
       })
     },
@@ -245,6 +234,6 @@ Vue.component("AppVue", {
     },
   },
   mounted: function(){
-    this.getEsportes();
+    this.getGenero();
   }
 });

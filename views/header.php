@@ -54,11 +54,46 @@
             }
         }
     ?>
+
+    <style>
+        main {
+            height: 80%;
+        }
+    </style>
 </head>
 
 <body>
 
-    <div id="mainLayout"></div>
+    <!--========== HEADER ==========-->
+    <header class="header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand ms-2" href="#">
+                    <img
+                        src="<?=URL?>/public/images/dsinChallenge.png"
+                        height="50px"
+                        alt="dsinChalengelogo"
+                        loading="lazy"
+                    />
+                </a>
+                <div class="collapse navbar-collapse ms-5" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a class="nav-link active" aria-current="page" href="<?= URL ?>/">Página inicial</a>
+                        <a class="nav-link" href="<?= URL ?>/esportes">Esporte</a>
+                        <a class="nav-link" href="<?= URL ?>/jogos">Jogo</a>
+                        <a class="nav-link" href="<?= URL ?>/hospedeiro">Hospedeiro</a>
+                        <a class="nav-link" href="<?= URL ?>/gostoMusical">Gosto Musical</a>
+                        <a class="nav-link" href="<?= URL ?>/patos">Patos</a>
+                        <a class="nav-link" href="<?= URL ?>/localizar_pato">Localizar Pato</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div id="mainLayout"></div>
+    </main>
 
     <script>
         Vue.component('vue-multiselect', window.VueMultiselect.default);

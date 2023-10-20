@@ -1,8 +1,9 @@
 const AppTemplate = `
 <div id="main">
 
-  <div class='grid col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center'>
+  <div class='grid col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center' style='padding: 2% 0'>
     <h2>Hospedeiros</h2>
+    <p style='color: red;'>OBS.: Os atributos (Força, Velocidade e Inteligência) são gerados com base no Gosto Musical, Esportes Praticados e Jogos Preferidos.</p>
   </div>
 
   <div class='grid col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'>

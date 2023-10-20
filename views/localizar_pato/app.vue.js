@@ -1,6 +1,6 @@
 const AppTemplate = `
 	<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-		<div id='main'>
+		<div id='main' style='padding: 2%'>
 			<div class='grid row text-center' style="margin-top: 15px;">
 				<h2 class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'>Localizar Pato</h2>
 			</div>
@@ -14,56 +14,63 @@ const AppTemplate = `
 				</div>
 				<div class='col-12 col-sm-3 col-md-3 col-lg-3 col-xl-3'></div>
 				<div v-if="input.PATO_LOCALIZADO != null && zumbiRandom.length > 0" class='col-12 col-sm-12 col-md-12 col-lg-12' style="margin-bottom: 20px;">
-					<div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'>
-							<div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center' style='margin: 2% 0'>
-								<h4>Analise Realizada pelo Sistema de Chip</h4>
-								<p v-html='this.analise()'></p>
-							</div>
-						</div>
-	
-						<div class='row'>
-							<div class="col-sm-12 col-md-2"></div>
-							<div class="col-sm-12 col-md-4">
-								<div id="card" style="background-color: black; border: 1px solid white;" class="card">
-									<div  class="card-body row">
-										<div style="color: white;" class="text-center"><b>Pato - Anas platyrhynchos</b></div>
-										<div style="margin-top: 1%; margin-bottom: 2%;" class="text-center">
-											<img src="${BASE}/public/images/pato.jpg" style="width: 200px;"/>
-										</div>
-										<div style="margin-top: -20px; color: white;">
-											<p class="mt-4"> <b>Força: {{ input.PATO_LOCALIZADO.FORCA ?? '' }}</b></p>
-										</div>
-										<div style="margin-top: -20px; color: white;">
-											<p class="mt-4"> <b>Velocidade: {{ input.PATO_LOCALIZADO.VELOCIDADE ?? '' }}</b></p>
-										</div>
-										<div style="margin-top: -20px; color: white;">
-											<p class="mt-4"> <b>Inteligência: {{ input.PATO_LOCALIZADO.INTELIGENCIA ?? '' }}</b></p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-12 col-md-4">
-								<div id="card" style="background-color: black; border: 1px solid white;" class="card">
-									<div  class="card-body row">
-										<div style="color: white;" class="text-center"><b>Zumbi</b></div>
-										<div style="margin-top: 1%; margin-bottom: 2%;" class="text-center">
-											<img src="${BASE}/public/images/img_zumbi.png" style="width: 213px;"/>
-										</div>
-										<div style="margin-top: -20px; color: white;">
-											<p class="mt-4"> <b>Força: {{ zumbiRandom[0].FORCA }}</b></p>
-										</div>
-										<div style="margin-top: -20px; color: white;">
-											<p class="mt-4"> <b>Velocidade: {{ zumbiRandom[0].VELOCIDADE }}</b></p>
-										</div>
-										<div style="margin-top: -20px; color: white;">
-											<p class="mt-4"> <b>Inteligência: {{ zumbiRandom[0].INTELIGENCIA }}</b></p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-12 col-md-2"></div>
+					<div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center' style='margin: 2% 0'>
+						<h4>Analise Realizada pelo Sistema de Chip</h4>
+						<p v-html='this.analise()'></p>
 					</div>
+
+					<div class='row'>
+						<div class="col-sm-12 col-md-2"></div>
+						<div class="col-sm-12 col-md-4">
+							<div id="card" style="background-color: rgb(2 6 23); border: 1px solid white;" class="card">
+								<div  class="card-body row">
+									<div style="color: white;" class="text-center"><b>Pato - Anas platyrhynchos</b></div>
+									<div style="margin-top: 1%; margin-bottom: 2%;" class="text-center">
+										<img src="${BASE}/public/images/pato.jpg" style="width: 200px;"/>
+									</div>
+									<div style="margin-top: -20px; color: white;">
+										<p class="mt-4"> <b>Força: <span v-bind:class="{ classModoTurbo: modoTurbo }" >{{ input.PATO_LOCALIZADO.FORCA ?? '' }}</span></b></p>
+									</div>
+									<div style="margin-top: -20px; color: white;">
+										<p class="mt-4"> <b>Velocidade: {{ input.PATO_LOCALIZADO.VELOCIDADE ?? '' }}</b></p>
+									</div>
+									<div style="margin-top: -20px; color: white;">
+										<p class="mt-4"> <b>Inteligência: {{ input.PATO_LOCALIZADO.INTELIGENCIA ?? '' }}</b></p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-4">
+							<div id="card" style="background-color: rgb(2 6 23); border: 1px solid white;" class="card">
+								<div  class="card-body row">
+									<div style="color: white;" class="text-center"><b>Zumbi</b></div>
+									<div style="margin-top: 1%; margin-bottom: 2%;" class="text-center">
+										<img src="${BASE}/public/images/img_zumbi.png" style="width: 213px;"/>
+									</div>
+									<div style="margin-top: -20px; color: white;">
+										<p class="mt-4"> <b>Força: {{ zumbiRandom[0].FORCA }}</b></p>
+									</div>
+									<div style="margin-top: -20px; color: white;">
+										<p class="mt-4"> <b>Velocidade: {{ zumbiRandom[0].VELOCIDADE }}</b></p>
+									</div>
+									<div style="margin-top: -20px; color: white;">
+										<p class="mt-4"> <b>Inteligência: {{ zumbiRandom[0].INTELIGENCIA }}</b></p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-12 col-md-2"></div>
+
+					<div class='row col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'>
+
+						<div class='col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center' style='margin: 2% 0'>
+							<h4>Ação Recomendada pelo Algoritimo do Sistema</h4>
+							<p v-html='textAux'></p>
+						</div>
+
+					</div>
+
 				</div>
 			</div>
 		</div>
@@ -128,9 +135,8 @@ Vue.component("AppVue", {
 						}
 					})
 					.then(() => {
-						console.log(this.analise());
+						this.condicao();
 					})
-					//this.condicao();
 					return;
 				}
 			} else {
@@ -182,20 +188,43 @@ Vue.component("AppVue", {
 
 			let hopForca = this.input.PATO_LOCALIZADO.FORCA;
 			let hopVelocidade = this.input.PATO_LOCALIZADO.VELOCIDADE;
-			let hosInteligencia = this.input.PATO_LOCALIZADO.INTELIGENCIA;
+			let hopInteligencia = this.input.PATO_LOCALIZADO.INTELIGENCIA;
 
 			// Verifica se o zumbi é mais perigoso
-			if (zumbiForca > hopForca && zumbiVelocidade > hopVelocidade && zumbiInteligencia > hosInteligencia) {
-				this.textAux = 'Zumbi tem um nível muito acima do Pato, ele esta ficando sem opções, sua unica saida é ativar o MODO TURBOOOO!!!!\nDuplicando os atributos do Pato e o eliminando o Zumbi.';
-
-				this.input.PATO_LOCALIZADO.FORCA = parseInt(this.input.PATO_LOCALIZADO.FORCA) * 2;
-				this.input.PATO_LOCALIZADO.VELOCIDADE = parseInt(this.input.PATO_LOCALIZADO.VELOCIDADE) * 2;
-				this.input.PATO_LOCALIZADO.INTELIGENCIA = parseInt(this.input.PATO_LOCALIZADO.INTELIGENCIA) * 2;
-				this.modoTurbo = true;
+			if (zumbiForca > hopForca && zumbiVelocidade > hopVelocidade && zumbiInteligencia > hopInteligencia) {
+				// correr e levantar voo
+				this.textAux = 'Zumbi tem um nível muito acima do Pato ' + `<span style='color: blue;'>${this.input.PATO_LOCALIZADO.NOME}</span>` + ', ele esta ficando sem opções, sua única saída é Lenvantar Vôo !!!!<br>Volte para base para treinamento.';
+				return;
 			}
 
+			// VELOCIDADE DO ZUMBI FOR MAIOR
+			if(zumbiVelocidade > hopVelocidade){
+				this.textAux = 'Zumbi ' +   `<span style='color: red;'>${this.zumbiRandom[0].NOME}</span>` + ' tem a Velocidade maior do que o Pato, para o Pato ' + `<span style='color: blue;'>${this.input.PATO_LOCALIZADO.NOME}</span>` + 'eliminar o Zumbi ' + `<span style='color: red;'>${this.zumbiRandom[0].NOME}</span>` + ', a sua única saída é MONTAR UMA ARMADILHA!!<br>Assim eliminando o Zumbi.';
+				return;
+				// montar armadilha
+			}
 
+			// FORÇA DO ZUMBI FOR MAIOR
+			if(zumbiForca > hopForca){
+				this.textAux = 'Zumbi tem a Força maior do que o Pato, para o Pato ' + `<span style='color: blue;'>${this.input.PATO_LOCALIZADO.NOME}</span>` + 'eliminar o Zumbi ' + `<span style='color: red;'>${this.zumbiRandom[0].NOME}</span>` + ', a sua única saída é ativar o MODO TURBOOOO!!!!<br>Duplicando a Força do Pato e eliminando o Zumbi.';
+				this.input.PATO_LOCALIZADO.FORCA = parseInt(this.input.PATO_LOCALIZADO.FORCA) * 2;
+				this.modoTurbo = true;
+				return;
+				// modo turbo
+			}
 
+			// INTELIGÊNCIA DO ZUMBI FOR MAIOR
+			if(zumbiInteligencia > hopInteligencia){
+				this.textAux = 'Zumbi tem a Inteligência maior do que o Pato, para o Pato ' + `<span style='color: blue;'>${this.input.PATO_LOCALIZADO.NOME}</span>` + 'eliminar o Zumbi ' + `<span style='color: red;'>${this.zumbiRandom[0].NOME}</span>` + ', a sua única saída é dar um TIRO NA CABEÇA!!!!<br>Assim eliminando o Zumbi.';
+				return;
+				// tiro na cabeça
+			}
+
+			// ZUMBI TOTALMENTE INFERIOR AO PATO
+			if(zumbiForca < hopForca && zumbiVelocidade < hopVelocidade && zumbiInteligencia < hopInteligencia){
+				this.textAux = 'Zumbi tem um nível muito abaixo do que o Pato, para o Pato ' + `<span style='color: blue;'>${this.input.PATO_LOCALIZADO.NOME}</span>` + ' eliminar o Zumbi ' + `<span style='color: red;'>${this.zumbiRandom[0].NOME}</span>` + ', basta QUEIMAR O ZUMBI!!!!<br>Assim eliminando o Zumbi.';
+				return;
+			}
 		}
 	}, 
 	mounted() {

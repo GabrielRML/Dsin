@@ -37,9 +37,9 @@ class Localizar_Pato_Model extends Model
         $sql = "SELECT
                     X.CODHOSPEDEIRO, X.NOME, X.SEXO, X.IDADE, X.PESO, X.ALTURA, X.TIPO_SANGUINEO, X.CODSTATUS,
                     (SELECT NOME FROM LABORATORIO.STATUS WHERE CODSTATUS = X.CODSTATUS) NOMESTATUS,
-                    AVG(X.FORCA) FORCA,
-                    (CASE WHEN (X.PESO / (X.ALTURA * X.ALTURA)) > 29.9 THEN AVG(X.VELOCIDADE) - (AVG(X.VELOCIDADE) * (ROUND(((X.PESO / (X.ALTURA * X.ALTURA) - 29.9) / 29.9) * 100))/100) ELSE AVG(X.VELOCIDADE) END) VELOCIDADE,
-                    AVG(X.INTELIGENCIA) INTELIGENCIA,
+                    COALESCE(AVG(X.FORCA), 1) FORCA,
+                    (CASE WHEN (X.PESO / (X.ALTURA * X.ALTURA)) > 29.9 THEN AVG(X.VELOCIDADE) - (AVG(X.VELOCIDADE) * (ROUND(((X.PESO / (X.ALTURA * X.ALTURA) - 29.9) / 29.9) * 100))/100) ELSE COALESCE(AVG(X.VELOCIDADE), 1) END) VELOCIDADE,
+                    COALESCE(AVG(X.INTELIGENCIA), 1) INTELIGENCIA,
                     (SELECT COUNT(CODHOSPEDEIRO) FROM LABORATORIO.hospedeiro_esporte WHERE CODHOSPEDEIRO = X.CODHOSPEDEIRO) QTD_ESPORTE,
                     (SELECT COUNT(CODHOSPEDEIRO) FROM laboratorio.hospedeiro_gosto_musical WHERE CODHOSPEDEIRO = X.CODHOSPEDEIRO) QTD_GENERO_MUSICAL,
                     (SELECT COUNT(CODHOSPEDEIRO) FROM laboratorio.hospedeiro_jogo WHERE CODHOSPEDEIRO = X.CODHOSPEDEIRO) QTD_JOGO
@@ -50,8 +50,8 @@ class Localizar_Pato_Model extends Model
                         H.CODHOSPEDEIRO = HGM.CODHOSPEDEIRO
                     LEFT JOIN LABORATORIO.GOSTO_MUSICAL GM ON 
                         GM.CODGENERO = HGM.CODGENERO
-                    WHERE
-                        (GM.FORCA IS NOT NULL OR GM.VELOCIDADE IS NOT NULL OR GM.INTELIGENCIA IS NOT NULL)
+                    -- WHERE
+                    --     (GM.FORCA IS NOT NULL OR GM.VELOCIDADE IS NOT NULL OR GM.INTELIGENCIA IS NOT NULL)
                     UNION
                     SELECT H.CODHOSPEDEIRO, H.NOME, H.SEXO, H.IDADE, H.PESO, H.ALTURA, H.TIPO_SANGUINEO, H.CODSTATUS, E.FORCA, E.VELOCIDADE, E.INTELIGENCIA
                     FROM LABORATORIO.HOSPEDEIRO H
@@ -59,8 +59,8 @@ class Localizar_Pato_Model extends Model
                         HE.CODHOSPEDEIRO = H.CODHOSPEDEIRO
                     LEFT JOIN LABORATORIO.ESPORTE E ON
                         E.CODESPORTE = HE.CODESPORTE
-                    WHERE
-                        (E.FORCA IS NOT NULL OR E.VELOCIDADE IS NOT NULL OR E.INTELIGENCIA IS NOT NULL)
+                    -- WHERE
+                    --     (E.FORCA IS NOT NULL OR E.VELOCIDADE IS NOT NULL OR E.INTELIGENCIA IS NOT NULL)
                     UNION
                     SELECT H.CODHOSPEDEIRO, H.NOME, H.SEXO, H.IDADE, H.PESO, H.ALTURA, H.TIPO_SANGUINEO, H.CODSTATUS, J.FORCA, J.VELOCIDADE, J.INTELIGENCIA
                     FROM LABORATORIO.HOSPEDEIRO H
@@ -68,8 +68,8 @@ class Localizar_Pato_Model extends Model
                         HJ.CODHOSPEDEIRO = H.CODHOSPEDEIRO
                     LEFT JOIN LABORATORIO.JOGO J ON 
                         J.CODJOGO = HJ.CODJOGO
-                    WHERE
-                        (J.FORCA IS NOT NULL OR J.VELOCIDADE IS NOT NULL OR J.INTELIGENCIA IS NOT NULL)
+                    -- WHERE
+                    --     (J.FORCA IS NOT NULL OR J.VELOCIDADE IS NOT NULL OR J.INTELIGENCIA IS NOT NULL)
                     ) X
                 WHERE
                     X.CODSTATUS = 2 /* NÃO ELIMINADO */
@@ -216,6 +216,14 @@ class Localizar_Pato_Model extends Model
                 $hospedeiro['FORCA'] = 100;
             if ($hospedeiro['INTELIGENCIA'] > 100) 
                 $hospedeiro['INTELIGENCIA'] = 100;
+
+            // limeta para não deixar ser <= 0
+            if ($hospedeiro['VELOCIDADE'] <= 0)
+                $hospedeiro['VELOCIDADE'] = 1;
+            if ($hospedeiro['FORCA'] <= 0) 
+                $hospedeiro['FORCA'] = 1;
+            if ($hospedeiro['INTELIGENCIA'] <= 0) 
+                $hospedeiro['INTELIGENCIA'] = 1;
 
             // Para deixar os números inteiros
             $hospedeiro['FORCA'] = intval($hospedeiro['FORCA']);

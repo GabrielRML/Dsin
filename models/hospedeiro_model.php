@@ -13,9 +13,9 @@ class Hospedeiro_Model extends Model
         $sql = "SELECT
                     X.CODHOSPEDEIRO, X.NOME, X.SEXO, X.IDADE, X.PESO, X.ALTURA, X.TIPO_SANGUINEO, X.CODSTATUS,
                     (SELECT NOME FROM LABORATORIO.STATUS WHERE CODSTATUS = X.CODSTATUS) NOMESTATUS,
-                    AVG(X.FORCA) FORCA,
-                    (CASE WHEN (X.PESO / (X.ALTURA * X.ALTURA)) > 29.9 THEN AVG(X.VELOCIDADE) - (AVG(X.VELOCIDADE) * (ROUND(((X.PESO / (X.ALTURA * X.ALTURA) - 29.9) / 29.9) * 100))/100) ELSE AVG(X.VELOCIDADE) END) VELOCIDADE,
-                    AVG(X.INTELIGENCIA) INTELIGENCIA,
+                    COALESCE(AVG(X.FORCA), 1) FORCA,
+                    (CASE WHEN (X.PESO / (X.ALTURA * X.ALTURA)) > 29.9 THEN AVG(X.VELOCIDADE) - (AVG(X.VELOCIDADE) * (ROUND(((X.PESO / (X.ALTURA * X.ALTURA) - 29.9) / 29.9) * 100))/100) ELSE COALESCE(AVG(X.VELOCIDADE), 1) END) VELOCIDADE,
+                    COALESCE(AVG(X.INTELIGENCIA), 1) INTELIGENCIA,
                     (SELECT COUNT(CODHOSPEDEIRO) FROM LABORATORIO.hospedeiro_esporte WHERE CODHOSPEDEIRO = X.CODHOSPEDEIRO) QTD_ESPORTE,
                     (SELECT COUNT(CODHOSPEDEIRO) FROM laboratorio.hospedeiro_gosto_musical WHERE CODHOSPEDEIRO = X.CODHOSPEDEIRO) QTD_GENERO_MUSICAL,
                     (SELECT COUNT(CODHOSPEDEIRO) FROM laboratorio.hospedeiro_jogo WHERE CODHOSPEDEIRO = X.CODHOSPEDEIRO) QTD_JOGO
@@ -26,8 +26,8 @@ class Hospedeiro_Model extends Model
                         H.CODHOSPEDEIRO = HGM.CODHOSPEDEIRO
                     LEFT JOIN LABORATORIO.GOSTO_MUSICAL GM ON 
                         GM.CODGENERO = HGM.CODGENERO
-                    WHERE
-                        (GM.FORCA IS NOT NULL OR GM.VELOCIDADE IS NOT NULL OR GM.INTELIGENCIA IS NOT NULL)
+                    -- WHERE
+                    --     (GM.FORCA IS NOT NULL OR GM.VELOCIDADE IS NOT NULL OR GM.INTELIGENCIA IS NOT NULL)
                     UNION
                     SELECT H.CODHOSPEDEIRO, H.NOME, H.SEXO, H.IDADE, H.PESO, H.ALTURA, H.TIPO_SANGUINEO, H.CODSTATUS, E.FORCA, E.VELOCIDADE, E.INTELIGENCIA
                     FROM LABORATORIO.HOSPEDEIRO H
@@ -35,8 +35,8 @@ class Hospedeiro_Model extends Model
                         HE.CODHOSPEDEIRO = H.CODHOSPEDEIRO
                     LEFT JOIN LABORATORIO.ESPORTE E ON
                         E.CODESPORTE = HE.CODESPORTE
-                    WHERE
-                        (E.FORCA IS NOT NULL OR E.VELOCIDADE IS NOT NULL OR E.INTELIGENCIA IS NOT NULL)
+                    -- WHERE
+                    --     (E.FORCA IS NOT NULL OR E.VELOCIDADE IS NOT NULL OR E.INTELIGENCIA IS NOT NULL)
                     UNION
                     SELECT H.CODHOSPEDEIRO, H.NOME, H.SEXO, H.IDADE, H.PESO, H.ALTURA, H.TIPO_SANGUINEO, H.CODSTATUS, J.FORCA, J.VELOCIDADE, J.INTELIGENCIA
                     FROM LABORATORIO.HOSPEDEIRO H
@@ -44,11 +44,13 @@ class Hospedeiro_Model extends Model
                         HJ.CODHOSPEDEIRO = H.CODHOSPEDEIRO
                     LEFT JOIN LABORATORIO.JOGO J ON 
                         J.CODJOGO = HJ.CODJOGO
-                    WHERE
-                        (J.FORCA IS NOT NULL OR J.VELOCIDADE IS NOT NULL OR J.INTELIGENCIA IS NOT NULL)
+                    -- WHERE
+                    --     (J.FORCA IS NOT NULL OR J.VELOCIDADE IS NOT NULL OR J.INTELIGENCIA IS NOT NULL)
                     ) X
                 GROUP BY
-                    X.CODHOSPEDEIRO";
+                    X.CODHOSPEDEIRO
+                ORDER BY
+                    X.NOME, X.CODHOSPEDEIRO";
 
         $result = $this->db->select($sql);
 
@@ -188,6 +190,14 @@ class Hospedeiro_Model extends Model
                 $hospedeiro['FORCA'] = 100;
             if ($hospedeiro['INTELIGENCIA'] > 100) 
                 $hospedeiro['INTELIGENCIA'] = 100;
+            
+            // limeta para não deixar ser <= 0
+            if ($hospedeiro['VELOCIDADE'] <= 0)
+                $hospedeiro['VELOCIDADE'] = 1;
+            if ($hospedeiro['FORCA'] <= 0) 
+                $hospedeiro['FORCA'] = 1;
+            if ($hospedeiro['INTELIGENCIA'] <= 0) 
+                $hospedeiro['INTELIGENCIA'] = 1;
 
             // Para deixar os números inteiros
             $hospedeiro['FORCA'] = intval($hospedeiro['FORCA']);
@@ -462,10 +472,9 @@ class Hospedeiro_Model extends Model
                 echo(json_encode($msg));exit;
             }
 
+            $sql = "DELETE FROM LABORATORIO.HOSPEDEIRO_GOSTO_MUSICAL WHERE CODHOSPEDEIRO = :CODHOSPEDEIRO";
+            $delete = $this->db->delete($sql, array('CODHOSPEDEIRO'=>$post->dados->CODHOSPEDEIRO));
             if (!empty($post->dados->GOSTO_MUSICAL)) {
-                $sql = "DELETE FROM LABORATORIO.HOSPEDEIRO_GOSTO_MUSICAL WHERE CODHOSPEDEIRO = :CODHOSPEDEIRO";
-                $delete = $this->db->delete($sql, array('CODHOSPEDEIRO'=>$post->dados->CODHOSPEDEIRO));
-
                 for($i=0; $i < count($post->dados->GOSTO_MUSICAL); $i++) {
                     $sql = "INSERT INTO LABORATORIO.HOSPEDEIRO_GOSTO_MUSICAL (CODHOSPEDEIRO, CODGENERO) VALUES
                     ((SELECT MAX(CODHOSPEDEIRO) FROM LABORATORIO.HOSPEDEIRO), :CODGENERO)";
@@ -473,10 +482,9 @@ class Hospedeiro_Model extends Model
                 }
             }
 
+            $sql = "DELETE FROM LABORATORIO.HOSPEDEIRO_ESPORTE WHERE CODHOSPEDEIRO = :CODHOSPEDEIRO";
+            $delete = $this->db->delete($sql, array('CODHOSPEDEIRO'=>$post->dados->CODHOSPEDEIRO));
             if (!empty($post->dados->ESPORTES)) {
-                $sql = "DELETE FROM LABORATORIO.HOSPEDEIRO_ESPORTE WHERE CODHOSPEDEIRO = :CODHOSPEDEIRO";
-                $delete = $this->db->delete($sql, array('CODHOSPEDEIRO'=>$post->dados->CODHOSPEDEIRO));
-
                 for($i=0; $i < count($post->dados->ESPORTES); $i++) {
                     $sql = "INSERT INTO LABORATORIO.HOSPEDEIRO_ESPORTE (CODHOSPEDEIRO, CODESPORTE) VALUES
                     ((SELECT MAX(CODHOSPEDEIRO) FROM LABORATORIO.HOSPEDEIRO), :CODESPORTE)";
@@ -484,10 +492,9 @@ class Hospedeiro_Model extends Model
                 }
             }
 
+            $sql = "DELETE FROM LABORATORIO.HOSPEDEIRO_JOGO WHERE CODHOSPEDEIRO = :CODHOSPEDEIRO";
+            $delete = $this->db->delete($sql, array('CODHOSPEDEIRO'=>$post->dados->CODHOSPEDEIRO));
             if (!empty($post->dados->HOSPEDEIRO_JOGO)) {
-                $sql = "DELETE FROM LABORATORIO.HOSPEDEIRO_JOGO WHERE CODHOSPEDEIRO = :CODHOSPEDEIRO";
-                $delete = $this->db->delete($sql, array('CODHOSPEDEIRO'=>$post->dados->CODHOSPEDEIRO));
-
                 for($i=0; $i < count($post->dados->ESPORTES); $i++) {
                     $sql = "INSERT INTO LABORATORIO.HOSPEDEIRO_JOGO (CODHOSPEDEIRO, CODJOGO) VALUES
                     ((SELECT MAX(CODHOSPEDEIRO) FROM LABORATORIO.HOSPEDEIRO), :CODJOGO)";
@@ -515,10 +522,9 @@ class Hospedeiro_Model extends Model
                 echo(json_encode($msg));exit;
             }
 
+            $sql = "DELETE FROM LABORATORIO.HOSPEDEIRO_GOSTO_MUSICAL WHERE CODHOSPEDEIRO = :CODHOSPEDEIRO";
+            $delete = $this->db->delete($sql, array('CODHOSPEDEIRO'=>$post->dados->CODHOSPEDEIRO));
             if (!empty($post->dados->GOSTO_MUSICAL)) {
-                $sql = "DELETE FROM LABORATORIO.HOSPEDEIRO_GOSTO_MUSICAL WHERE CODHOSPEDEIRO = :CODHOSPEDEIRO";
-                $delete = $this->db->delete($sql, array('CODHOSPEDEIRO'=>$post->dados->CODHOSPEDEIRO));
-
                 for($i=0; $i < count($post->dados->GOSTO_MUSICAL); $i++) {
                     if (empty($post->dados->GOSTO_MUSICAL[$i]->CODGENERO))
                         continue;
@@ -528,10 +534,9 @@ class Hospedeiro_Model extends Model
                 }
             }
 
+            $sql = "DELETE FROM LABORATORIO.HOSPEDEIRO_ESPORTE WHERE CODHOSPEDEIRO = :CODHOSPEDEIRO";
+            $delete = $this->db->delete($sql, array('CODHOSPEDEIRO'=>$post->dados->CODHOSPEDEIRO));
             if (!empty($post->dados->ESPORTES)) {
-                $sql = "DELETE FROM LABORATORIO.HOSPEDEIRO_ESPORTE WHERE CODHOSPEDEIRO = :CODHOSPEDEIRO";
-                $delete = $this->db->delete($sql, array('CODHOSPEDEIRO'=>$post->dados->CODHOSPEDEIRO));
-
                 for($i=0; $i < count($post->dados->ESPORTES); $i++) {
                     if (empty($post->dados->ESPORTES[$i]->CODESPORTE))
                         continue;
@@ -541,10 +546,9 @@ class Hospedeiro_Model extends Model
                 }
             }
 
+            $sql = "DELETE FROM LABORATORIO.HOSPEDEIRO_JOGO WHERE CODHOSPEDEIRO = :CODHOSPEDEIRO";
+            $delete = $this->db->delete($sql, array('CODHOSPEDEIRO'=>$post->dados->CODHOSPEDEIRO));
             if (!empty($post->dados->JOGOS_PREFERIDOS)) {
-                $sql = "DELETE FROM LABORATORIO.HOSPEDEIRO_JOGO WHERE CODHOSPEDEIRO = :CODHOSPEDEIRO";
-                $delete = $this->db->delete($sql, array('CODHOSPEDEIRO'=>$post->dados->CODHOSPEDEIRO));
-
                 for($i=0; $i < count($post->dados->ESPORTES); $i++) {
                     if (empty($post->dados->JOGOS_PREFERIDOS[$i]->CODJOGO))
                         continue;

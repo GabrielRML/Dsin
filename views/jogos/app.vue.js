@@ -8,7 +8,7 @@ const AppTemplate = `
   <div class='grid col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12'>
 
     <div class='headGrid'>
-      <button type="button" @click='openModal("Novo")' class="btn btn-primary"><i class="fa-solid fa-user"></i>&nbsp&nbspAdicionar</button>
+      <button type="button" @click='openModal("Novo")' class="btn btn-primary"><i class="fa-solid fa-plus fa-lg"></i>&nbsp&nbspAdicionar</button>
       <button type="button" @click='openModal("Editar")' class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i>&nbsp&nbspEditar</button>
       <button type="button" @click='openModal("Excluir")' class="btn btn-danger"><i class="fa-solid fa-trash fa-lg"></i>&nbsp&nbspExcluir</button>
     </div>
