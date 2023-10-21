@@ -99,6 +99,8 @@ CREATE TABLE PATOS (
     CONSTRAINT FK_DUCK_STATUS FOREIGN KEY (CODSTATUS) REFERENCES STATUS(CODSTATUS)
 );
 
+INSERT INTO STATUS (CODSTATUS,NOME) VALUES ('1', 'ELIMINADO', 'S'), ('2', 'NÂO ELIMINADO', 'S');
+
 INSERT INTO ESPORTE (NOME, DESCRICAO, FORCA, VELOCIDADE, INTELIGENCIA, ATIVO) VALUES
     ('Futebol', 'Esporte de equipe que envolve chutar uma bola no gol', 10, 8, 6, 'S'),
     ('Basquete', 'Esporte de equipe jogado com uma bola em uma quadra', 8, 9, 7, 'S'),
