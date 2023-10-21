@@ -1,5 +1,15 @@
 # Documentação do projeto
 
+- Inicialização:
+  Necessário -> XAMPP
+  O programa deve estar entro da pasta xampp/htdocs 
+    -> O nome da pasta tem que estar com Dsin
+    -> Caso o nome da pasta sejá alterado, precisará mudar o caminha da rota em config.php -> define('URL', 'http://localhost/{NOME DA PASTA}/') e
+    public/js/common.js -> BASE = 'http://localhost/{NOME DA PASTA}';
+  Banco de Dados -> MySQL
+    -> Para configurar a iniciazação Banco esta no arquivo config.php;
+  
+
 - Introdução:
   
   O Sistema de Cadastro de Hospedeiros de Zumbis (SCHZ) é uma solução inovadora projetada para registrar e categorizar zumbis com base em suas preferências quando ainda eram humanos. 
@@ -24,7 +34,8 @@
     Intermediam a comunicação entre Models e Views.
     Processam entradas do usuário, fazem as devidas interações com os Models e retornam a saída para as Views.
     Ao seguir essa estrutura MVC, o projeto se beneficia de uma separação clara de responsabilidades, facilitando a manutenção, escalabilidade e compreensão do código.
-  
+
+- Limite de Atributos de 1 a 100;
 - Calculo feito para os status do hospedeiro (velocidade, força, etc.)
 
   -> * Por envolver esforço físico e ganho de resistência e por melhorar a auto-estima, aumenta tanto velocidade, força e inteligência.
@@ -80,7 +91,7 @@
   
   /*Como é feito o calculo para definir a velocidade inicial antes de aplicar as condições de idade */
   
-  	Para realizar a conta é realizado o IMC do hospedeiro /(X.PESO / (X.ALTURA * X.ALTURA)
+  	Para realizar a conta é realizado o IMC do hospedeiro /(PESO / (ALTURA * ALTURA)
   	Pós obiter o valor do IMC é verificado o quanto esse hospedeiro esta acima IMC saúdavel, então é pego essa informação em %
   		-> ((PESO / (ALTURA * ALTURA) - 29.9) / 29.9) * 100;
   	Depois de saber o quanto % esse hospedeiro está de seu IMC saudavel, é feita a conta com a média da velocidade para saber o quanto ela
@@ -96,7 +107,7 @@
   
   Para fazer executar o teste no projeto, primeiro tem que criar as tabelas do banco. Ao abrir o código, na pasta config irá colocar todas as informações do banco que você
   acabou de criar, por exemplo criamos o projeto usando xammp, então na nossa URL colocamos o localhost “/” o caminho onde esta o projeto. Terá que alterar também o caminho
-  na pasta “public/js/libs.js”, da mesma maneira que alterou na config. Depois disso é só ligar o xampp ou ligar oque foi escolhido por você, e abrir o localhost “/” o caminho do seu projeto. 
+  na pasta “public/js/common.js”, da mesma maneira que alterou na config. Depois disso é só ligar o xampp ou ligar oque foi escolhido por você, e abrir o localhost “/” o caminho do seu projeto. 
 
 - Conclusão e Contato:
   
